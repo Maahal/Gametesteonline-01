@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
 const loader = new GLTFLoader();
 
 loader.load(
-  '/public/map.glb', // Caminho para o arquivo
+  '/map.glb', // Caminho para o arquivo
   (gltf) => {
     const model = gltf.scene;
     model.position.set(0, 0, 0); // Ajuste a posição
