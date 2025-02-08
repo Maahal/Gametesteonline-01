@@ -66,56 +66,52 @@ loader.load(
   }
 );
 
-// Criando o chão
-const groundGeometry = new THREE.PlaneGeometry(20, 20);
-const groundMaterial = new THREE.MeshStandardMaterial({ color: 0x444444 });
-const ground = new THREE.Mesh(groundGeometry, groundMaterial);
-ground.rotation.x = -Math.PI / 2;
-ground.receiveShadow = true;
-scene.add(ground);
+function criarPoste(x, z) {
+  const postMaterial = new THREE.MeshStandardMaterial({ color: 0x555555 });
+  const lightMaterial = new THREE.MeshStandardMaterial({ color: 0xffff00, emissive: 0xffff00 });
 
-// Criando a rua
-const streetGeometry = new THREE.PlaneGeometry(10, 20);
-const streetMaterial = new THREE.MeshStandardMaterial({ color: 0x222222 });
-const street = new THREE.Mesh(streetGeometry, streetMaterial);
-street.rotation.x = -Math.PI / 2;
-street.position.y = 0.01;
-street.receiveShadow = true;
-scene.add(street);
+  // Poste (cilindro)
+  const post = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 3), postMaterial);
+  post.position.set(x, 1.5, z);
+  post.castShadow = true;
+  scene.add(post);
 
-// Criando a calçada
-const sidewalkGeometry = new THREE.PlaneGeometry(4, 20);
-const sidewalkMaterial = new THREE.MeshStandardMaterial({ color: 0x888888 });
-const sidewalkLeft = new THREE.Mesh(sidewalkGeometry, sidewalkMaterial);
-const sidewalkRight = new THREE.Mesh(sidewalkGeometry, sidewalkMaterial);
-sidewalkLeft.rotation.x = -Math.PI / 2;
-sidewalkRight.rotation.x = -Math.PI / 2;
-sidewalkLeft.position.set(-7, 0.02, 0);
-sidewalkRight.position.set(7, 0.02, 0);
-sidewalkLeft.receiveShadow = true;
-sidewalkRight.receiveShadow = true;
-scene.add(sidewalkLeft, sidewalkRight);
+  // Lâmpada (esfera)
+  const lightBulb = new THREE.Mesh(new THREE.SphereGeometry(0.3), lightMaterial);
+  lightBulb.position.set(x, 3.2, z);
+  scene.add(lightBulb);
 
-// Criando postes de luz
-const postMaterial = new THREE.MeshStandardMaterial({ color: 0x555555 });
-const lightMaterial = new THREE.MeshStandardMaterial({ color: 0xffff00, emissive: 0xffff00 });
-for (let i = -9; i <= 9; i += 6) {
-    const postGeometry = new THREE.CylinderGeometry(0.2, 0.2, 3);
-    const post = new THREE.Mesh(postGeometry, postMaterial);
-    post.position.set(7, 1.5, i);
-    post.castShadow = true;
-    scene.add(post);
-    
-    const lightGeometry = new THREE.SphereGeometry(0.3);
-    const lightBulb = new THREE.Mesh(lightGeometry, lightMaterial);
-    lightBulb.position.set(7, 3.2, i);
-    scene.add(lightBulb);
-    
-    const pointLight = new THREE.PointLight(0xffffaa, 1, 5);
-    pointLight.position.set(7, 3.2, i);
-    pointLight.castShadow = true;
-    scene.add(pointLight);
+  // Luz pontual
+  const pointLight = new THREE.PointLight(0xffffaa, 5, 10);
+  pointLight.position.set(x, 3.2, z);
+  pointLight.castShadow = true;
+
+  // Melhorando a qualidade das sombras
+pointLight.shadow.mapSize.width = 1024;  // Aumenta a resolução da sombra
+pointLight.shadow.mapSize.height = 1024; // Aumenta a resolução da sombra
+pointLight.shadow.radius = 4;            // Suaviza as sombras
+pointLight.shadow.bias = -0.005;         // Corrige possíveis artefatos
+
+  scene.add(pointLight);
 }
+
+// Criando postes em diferentes posições
+//direito
+criarPoste(5, 0);
+criarPoste(5, 5);
+criarPoste(5, -5);
+//Esquerdo
+criarPoste(-5, 0);
+criarPoste(-5, 5);
+criarPoste(-5, -5);
+
+//direito
+criarPoste(5, -20);
+criarPoste(15, -20);
+//Esquerdo
+criarPoste(-5, -20);
+criarPoste(-15, -20);
+
 
 // Criando função para adicionar casas
 function createHouse(x, z) {
@@ -148,20 +144,6 @@ const avatar = new THREE.Mesh(avatarGeometry, avatarMaterial);
 avatar.position.y = 0.5;
 avatar.castShadow = true;
 scene.add(avatar);
-
-// Luz ambiente
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-scene.add(ambientLight);
-
-// Luz direcional com sombras
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-directionalLight.position.set(5, 5, 5);
-directionalLight.castShadow = true;
-directionalLight.shadow.mapSize.width = 1024;
-directionalLight.shadow.mapSize.height = 1024;
-directionalLight.shadow.camera.near = 0.5;
-directionalLight.shadow.camera.far = 50;
-scene.add(directionalLight);
 
 // Posição inicial da câmera
 camera.position.set(0, 5, 10);
