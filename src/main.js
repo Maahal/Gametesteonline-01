@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
+//LOGO
+
 // Configuração da cena
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -12,6 +14,9 @@ document.body.appendChild(renderer.domElement);
 document.body.style.margin = '0';
 document.body.style.overflow = 'hidden';
 
+//COR DO CEU
+scene.background = new THREE.Color(0x0E161A);
+
 // JOYSTICK
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -20,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const joystick = nipplejs.create({
       zone: joystickContainer, // Define onde o joystick será renderizado
       mode: 'static',          // Joystick fixo
-      position: { left: '50%', top: '-50%' },
+      position: { left: '60%', top: '25%' },
       color: 'gray',           // Cor do joystick
       size: 120                // Tamanho do joystick
   });
@@ -108,6 +113,7 @@ criarPoste(-5, 0);
 criarPoste(-5, 5);
 criarPoste(-5, -11);
 
+// RUA X
 //direito
 criarPoste(5, -20);
 criarPoste(15, -20);
@@ -116,6 +122,13 @@ criarPoste(22, -20);
 criarPoste(-5, -20);
 criarPoste(-15, -20);
 criarPoste(-22, -20);
+
+// PRAÇA
+//direito
+criarPoste(5, -50);
+//Esquerdo
+criarPoste(-5, -50);
+
 
 // luz ambiente 
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.1); // Cor branca com intensidade 0.5

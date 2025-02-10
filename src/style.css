@@ -94,3 +94,20 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.logo {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 1000; /* Mantém a logo sobre os outros elementos */
+}
+
+.logo img {
+  width: 100px; /* Ajuste o tamanho da logo */
+  height: auto;
+  transition: transform 0.2s ease-in-out;
+}
+
+.logo img:hover {
+  transform: scale(1.1); /* Efeito de zoom ao passar o mouse */
+}
