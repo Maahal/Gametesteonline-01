@@ -20,9 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const joystick = nipplejs.create({
       zone: joystickContainer, // Define onde o joystick será renderizado
       mode: 'static',          // Joystick fixo
-      position: { left: '50%', top: '50%' },
+      position: { left: '120%', top: '-70%' },
       color: 'gray',           // Cor do joystick
-      size: 100                // Tamanho do joystick
+      size: 120                // Tamanho do joystick
   });
 
   joystick.on('move', (evt, data) => {
@@ -30,8 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const sideways = data.vector.x; // Movimento lateral
 
       // Adapte esse código para movimentar o avatar no seu game
-      avatar.position.x += sideways * 0.1;
-      avatar.position.z += forward * 0.1;
+      avatar.position.x += sideways * 0.2;
+      avatar.position.z += forward * 0.2;
   });
 
   joystick.on('end', () => {
@@ -45,18 +45,18 @@ document.addEventListener('DOMContentLoaded', () => {
 const loader = new GLTFLoader();
 
 loader.load(
-  '/map.glb', // Caminho para o arquivo
+  '/public/map.glb', // Caminho para o arquivo
   (gltf) => {
-    const model = gltf.scene;
-    model.position.set(0, 0, 0); // Ajuste a posição
-    model.scale.set(1, 1, 1); // Ajuste o tamanho
-    model.traverse((child) => {
+    const model1 = gltf.scene;
+    model1.position.set(0, 0, 0); // Ajuste a posição
+    model1.scale.set(1, 1, 1); // Ajuste o tamanho
+    model1.traverse((child) => {
       if (child.isMesh) {
         child.castShadow = true; // Permite sombras
         child.receiveShadow = true;
       }
     });
-    scene.add(model); // Adiciona à cena
+    scene.add(model1); // Adiciona à cena
   },
   (xhr) => {
     console.log(`Carregando: ${(xhr.loaded / xhr.total) * 100}%`);
@@ -66,12 +66,15 @@ loader.load(
   }
 );
 
+
+// POSTES DE LUZ
+
 function criarPoste(x, z) {
   const postMaterial = new THREE.MeshStandardMaterial({ color: 0x555555 });
   const lightMaterial = new THREE.MeshStandardMaterial({ color: 0xffff00, emissive: 0xffff00 });
 
   // Poste (cilindro)
-  const post = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 3), postMaterial);
+  const post = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.1, 3), postMaterial);
   post.position.set(x, 1.5, z);
   post.castShadow = true;
   scene.add(post);
@@ -99,19 +102,24 @@ pointLight.shadow.bias = -0.005;         // Corrige possíveis artefatos
 //direito
 criarPoste(5, 0);
 criarPoste(5, 5);
-criarPoste(5, -5);
+criarPoste(5, -11);
 //Esquerdo
 criarPoste(-5, 0);
 criarPoste(-5, 5);
-criarPoste(-5, -5);
+criarPoste(-5, -11);
 
 //direito
 criarPoste(5, -20);
 criarPoste(15, -20);
+criarPoste(22, -20);
 //Esquerdo
 criarPoste(-5, -20);
 criarPoste(-15, -20);
+criarPoste(-22, -20);
 
+// luz ambiente 
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.1); // Cor branca com intensidade 0.5
+scene.add(ambientLight);
 
 // Criando função para adicionar casas
 function createHouse(x, z) {
@@ -146,7 +154,7 @@ avatar.castShadow = true;
 scene.add(avatar);
 
 // Posição inicial da câmera
-camera.position.set(0, 5, 10);
+camera.position.set(0, 1, 5);
 camera.lookAt(avatar.position);
 
 // Controles do avatar
@@ -161,7 +169,7 @@ function moveAvatar() {
     if (keys['ArrowRight']) avatar.position.x += 0.1;
     
     // Atualizando a posição da câmera para seguir o avatar
-    camera.position.set(avatar.position.x, avatar.position.y + 5, avatar.position.z + 10);
+    camera.position.set(avatar.position.x, avatar.position.y + 1.5, avatar.position.z + 4);
     camera.lookAt(avatar.position);
 }
 
