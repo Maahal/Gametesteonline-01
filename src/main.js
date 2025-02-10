@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const joystick = nipplejs.create({
       zone: joystickContainer, // Define onde o joystick será renderizado
       mode: 'static',          // Joystick fixo
-      position: { left: '120%', top: '-70%' },
+      position: { left: '50%', top: '-50%' },
       color: 'gray',           // Cor do joystick
       size: 120                // Tamanho do joystick
   });
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
 const loader = new GLTFLoader();
 
 loader.load(
-  '/public/map.glb', // Caminho para o arquivo
+  '/map.glb', // Caminho para o arquivo
   (gltf) => {
     const model1 = gltf.scene;
     model1.position.set(0, 0, 0); // Ajuste a posição
