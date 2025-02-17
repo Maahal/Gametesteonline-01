@@ -138,60 +138,59 @@ loader.load(
   }
 );
 
-// Criar um cubo
+// Criar dois cubos
 const geometry = new THREE.BoxGeometry(1, 1, 1);
 const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
-const cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
+const cube1 = new THREE.Mesh(geometry, material);
+scene.add(cube1);
 
-// Criar Raycaster e um vetor de mouse
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
-
-// Evento de clique
-window.addEventListener("click", (event) => {
-  // Converter a posição do mouse para coordenadas normalizadas (-1 a 1)
-  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-  // Atualizar o Raycaster com a posição do mouse e a câmera
-  raycaster.setFromCamera(mouse, camera);
-
-  // Verificar interseção com o segundo cubo
-  const intersects = raycaster.intersectObject(cube1);
-  if (intersects.length > 0) {
-    window.open("https://www.bymahal.com/portf%C3%B3lio", "_blank"); // 🔗 Abre uma nova aba
-  }
-});
-
-// Criar um segundo cubo (cor vermelha)
+// Segundo cubo (cor azul)
 const geometry2 = new THREE.BoxGeometry(2.3, 5, 1);
 const material2 = new THREE.MeshStandardMaterial({ color: 0x0000ff });
 const cube2 = new THREE.Mesh(geometry2, material2);
 scene.add(cube2);
 
-// Posicionar o segundo cubo um pouco à direita
-cube2.position.x = -0.5;
-cube2.position.y = 1;
-cube2.position.z = -96;
+// Posicionar os cubos
+cube1.position.set(0, 1, -5);
+cube2.position.set(-0.5, 1, -96);
 
-// Adicionar interação de clique no segundo cubo
-window.addEventListener("click", (event) => {
-  // Converter a posição do mouse para coordenadas normalizadas (-1 a 1)
-  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+// Criar Raycaster e vetor do mouse
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
 
-  // Atualizar o Raycaster com a posição do mouse e a câmera
+// Função para detectar clique ou toque
+function checkIntersection(event) {
+  // Obter posição do clique ou toque
+  let x, y;
+  if (event.touches) { // 📱 Celular
+    x = event.touches[0].clientX;
+    y = event.touches[0].clientY;
+  } else { // 🖱️ Computador
+    x = event.clientX;
+    y = event.clientY;
+  }
+
+  // Converter para coordenadas normalizadas (-1 a 1)
+  mouse.x = (x / window.innerWidth) * 2 - 1;
+  mouse.y = -(y / window.innerHeight) * 2 + 1;
+
+  // Atualizar Raycaster
   raycaster.setFromCamera(mouse, camera);
 
-  // Verificar interseção com o segundo cubo
-  const intersects = raycaster.intersectObject(cube2);
+  // Verificar interseção com os cubos
+  const intersects = raycaster.intersectObjects([cube1, cube2]);
   if (intersects.length > 0) {
-    window.open("https://www.bymahal.com/portf%C3%B3lio", "_blank"); // 🔗 Abre uma nova aba
+    if (intersects[0].object === cube1) {
+      window.open("https://www.bymahal.com", "_blank"); // 🔗 Primeiro cubo
+    } else if (intersects[0].object === cube2) {
+      window.open("https://www.bymahal.com/portf%C3%B3lio", "_blank"); // 🔗 Segundo cubo
+    }
   }
-});
+}
 
-
+// Adicionar eventos de clique e toque
+window.addEventListener("click", checkIntersection);
+window.addEventListener("touchstart", checkIntersection);
 
 
 // POSTES DE LUZ
@@ -288,7 +287,7 @@ const avatar = new THREE.Mesh(avatarGeometry, avatarMaterial);
 avatar.position.y = 0.5;
 //avatar.position.x = -1;
 //avatar.position.y = 1;
-//avatar.position.z = -50;
+avatar.position.z = -90;
 avatar.castShadow = true;
 scene.add(avatar);
 
@@ -368,9 +367,12 @@ function animate() {
   // 🔄 Suavizar a rotação da câmera para olhar para frente
   camera.lookAt(lookAtTarget);
 
-  //CUBO GIRANDO
-  cube.rotation.x += 0.01;
-  cube.rotation.y += 0.01;
+  // Verifica se o objeto está definido antes de tentar usá-lo
+  if (typeof cube1 !== "undefined") {
+    cube1.rotation.y += 0.01;
+  }
+  if (typeof cube2 !== "undefined") {
+  }
 
     renderer.render(scene, camera);
 }
